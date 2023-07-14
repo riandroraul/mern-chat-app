@@ -3,16 +3,22 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = require("express")();
 const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const userRouter = require("./routes/user.routes");
 
 dotenv.config();
-const port = process.env.PORT;
-// app.use(cors({ credentials: true }));
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
 
-app.get("/", function (req, res, next) {
-  res.send("Api is running");
-});
+connectDB();
+const port = process.env.PORT;
+app.use(cors({ credentials: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// app.get("/", function (req, res, next) {
+//   res.send("Api is running");
+// });
+
+app.use("/api/user", userRouter);
 
 app.get("/api/chat", function (req, res, next) {
   if (req.query.hasOwnProperty("id")) {
