@@ -1,6 +1,7 @@
 // import {} from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { ViewIcon } from "@chakra-ui/icons";
+import axios from "axios";
 import {
   VStack,
   FormControl,
@@ -8,6 +9,7 @@ import {
   InputGroup,
   InputRightElement,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
@@ -18,16 +20,75 @@ const SignUp = () => {
   const [confirmPassword, setConfirmpassword] = useState();
   const [picture, setPicture] = useState();
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [invalid, setInvalid] = useState(false);
+  const toast = useToast();
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Please fill all fields!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+    setLoading(false);
+    return;
+  };
 
-  const postDetails = (pic) => {};
+  const postDetails = async (pic) => {
+    setLoading(true);
+    if (pic === undefined) {
+      toast({
+        title: "Please Select an Image!",
+        // description: "We've created your account for you.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    if (
+      pic.type === "image/jpg" ||
+      pic.type === "image/jpeg" ||
+      pic.type === "image/png"
+    ) {
+      const data = new FormData();
+      data.append("file", pic);
+      data.append("upload_preset", "chat-app");
+      let res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dte6aijcq/image/upload",
+        data
+      );
+      const urlPicture = res.data.url;
+      setPicture(urlPicture.toString());
+      setLoading(false);
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        // description: "We've created your account for you.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+  };
 
   return (
     <VStack spacing="5px">
       <FormControl id="name" isRequired>
         <FormLabel>Name</FormLabel>
         <Input
+          isInvalid={invalid}
+          errorBorderColor="crimson"
           placeholder="Enter Your Name"
           onChange={(e) => setName(e.target.value)}
         />
@@ -61,7 +122,7 @@ const SignUp = () => {
         </InputGroup>
       </FormControl>
 
-      <FormControl>
+      <FormControl id="confirm-password" isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <InputGroup>
           <Input
@@ -81,7 +142,7 @@ const SignUp = () => {
         </InputGroup>
       </FormControl>
 
-      <FormControl id="picture">
+      <FormControl id="picture" isRequired>
         <FormLabel>Upload Your Picture</FormLabel>
         <Input
           variant="unstyled"
@@ -97,6 +158,7 @@ const SignUp = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Sign Up
       </Button>

@@ -1,6 +1,8 @@
+const { registerUser, loginUser } = require("../controller/user.controller");
+
 const userRouter = require("express").Router();
 
-// userRouter.get('/api/user', middleware, controller)
-// userRouter.get('/api/user', middleware, controller)
+userRouter.post("/register", registerUser);
+userRouter.post("/login", loginUser);
 
 module.exports = userRouter;

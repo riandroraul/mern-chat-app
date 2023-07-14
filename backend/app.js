@@ -18,6 +18,9 @@ app.use(bodyParser.json());
 //   res.send("Api is running");
 // });
 
+app.get("/", (req, res) => {
+  console.log(req.ip);
+});
 app.use("/api/user", userRouter);
 
 app.get("/api/chat", function (req, res, next) {
