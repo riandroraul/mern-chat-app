@@ -12,6 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState();
@@ -21,8 +22,9 @@ const SignUp = () => {
   const [picture, setPicture] = useState();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [invalid, setInvalid] = useState(false);
+  // const [invalid, setInvalid] = useState(false);
   const toast = useToast();
+  const history = useHistory();
 
   const submitHandler = async () => {
     setLoading(true);
@@ -34,9 +36,52 @@ const SignUp = () => {
         isClosable: true,
         position: "bottom",
       });
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-    return;
+    if (password !== confirmPassword) {
+      toast({
+        title: "password not matching!",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URI}/api/user/register`,
+        { name, email, password, picture },
+        config
+      );
+      toast({
+        title: "Register Successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      history.push("/chats");
+    } catch (error) {
+      toast({
+        title: "Register failed!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
   };
 
   const postDetails = async (pic) => {
@@ -87,8 +132,8 @@ const SignUp = () => {
       <FormControl id="name" isRequired>
         <FormLabel>Name</FormLabel>
         <Input
-          isInvalid={invalid}
-          errorBorderColor="crimson"
+          // isInvalid={invalid}
+          // errorBorderColor="crimson"
           placeholder="Enter Your Name"
           onChange={(e) => setName(e.target.value)}
         />

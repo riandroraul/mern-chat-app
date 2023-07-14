@@ -5,10 +5,11 @@ const apiUrl = process.env.REACT_APP_API_URI;
 const ChatPage = () => {
   const [chats, setChats] = useState();
   const fetchChats = async () => {
-    const { data } = await axios.get(`${apiUrl}/api/chat`);
-    setChats(data);
+    const res = await axios.get(`${apiUrl}/api/chat`);
+    setChats(res);
   };
 
+  console.log(chats);
   useEffect(() => {
     fetchChats();
   }, []);
