@@ -75,9 +75,11 @@ async function getUsers(req, res) {
           ],
         }
       : {};
-    let users = await User.find(keyword).find({
-      _id: { $ne: req.user._id },
-    });
+    let users = await User.find(keyword)
+      .find({
+        _id: { $ne: req.user._id },
+      })
+      .select("-password");
     res.status(200).json(users);
   } catch (error) {
     res.status(404).json({
