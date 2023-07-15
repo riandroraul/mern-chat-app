@@ -1,4 +1,5 @@
 const chats = require("./data/data");
+const crypto = require("crypto");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = require("express")();
@@ -14,13 +15,6 @@ app.use(cors({ credentials: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// app.get("/", function (req, res, next) {
-//   res.send("Api is running");
-// });
-
-app.get("/", (req, res) => {
-  console.log(req.ip);
-});
 app.use("/api/user", userRouter);
 
 app.get("/api/chat", function (req, res, next) {
@@ -30,6 +24,7 @@ app.get("/api/chat", function (req, res, next) {
   } else {
     res.send(chats);
   }
+  console.log(crypto.randomBytes(32).toString("hex"));
 });
 
 app.listen(port, () => {

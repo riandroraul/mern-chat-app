@@ -45,7 +45,6 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
   try {
-    console.log(req.ip);
     const { email, password } = req.body;
     const checkUser = await User.findOne({ email });
     if (checkUser && (await comparePassword(password, checkUser.password))) {
@@ -66,4 +65,25 @@ async function loginUser(req, res) {
   }
 }
 
-module.exports = { registerUser, loginUser };
+async function getUsers(req, res) {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+    let users = await User.find(keyword).find({
+      _id: { $ne: req.user._id },
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message,
+    });
+  }
+}
+
+module.exports = { registerUser, loginUser, getUsers };
