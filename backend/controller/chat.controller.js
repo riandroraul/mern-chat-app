@@ -70,8 +70,7 @@ async function createGroupChat(req, res) {
     return res.status(400).send({ message: "Please fill all the fields" });
   }
 
-  let users = [];
-  users.push(req.body.users);
+  let users = req.body.users;
   if (users.length < 2) {
     return res
       .status(400)

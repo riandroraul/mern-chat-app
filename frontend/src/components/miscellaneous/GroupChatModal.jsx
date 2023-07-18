@@ -100,7 +100,7 @@ const GroupChatModal = ({ children }) => {
         `${process.env.REACT_APP_API_URI}/api/chat/group/create`,
         {
           name: groupChatName,
-          users: [].push(selectedUsers.map((u) => u._id)),
+          users: selectedUsers.map((u) => u._id),
         },
         config
       );
