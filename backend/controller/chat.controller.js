@@ -17,6 +17,7 @@ async function accessChat(req, res) {
   })
     .populate("users", "-password")
     .populate("latestMessage");
+  console.log("line 20 : ", isChat);
 
   isChat = await User.populate(isChat, {
     path: "latestMessage.sender",
@@ -40,7 +41,8 @@ async function accessChat(req, res) {
     );
     res.status(200).json(fullchat);
   } catch (error) {
-    res.status(400).send(error.message);
+    console.log(error.message);
+    // res.json({ message: error.message });
   }
 }
 

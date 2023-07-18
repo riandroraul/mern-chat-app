@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [name, setName] = useState();
@@ -24,7 +24,7 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   // const [invalid, setInvalid] = useState(false);
   const toast = useToast();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const submitHandler = async () => {
     setLoading(true);
@@ -70,7 +70,7 @@ const SignUp = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-      history.push("/chats");
+      navigate("/chats");
     } catch (error) {
       toast({
         title: "Register failed!",

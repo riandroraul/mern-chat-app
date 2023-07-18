@@ -52,6 +52,7 @@ async function loginUser(req, res) {
         _id: checkUser._id,
         name: checkUser.name,
         email: checkUser.email,
+        pic: checkUser.picture,
         token: generateToken({ id: checkUser._id, email: checkUser.email }),
       });
     } else {
