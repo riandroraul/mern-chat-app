@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Stack, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
@@ -53,7 +53,7 @@ const MyChats = () => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <Flex
+      <Box
         pb={3}
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
@@ -62,7 +62,7 @@ const MyChats = () => {
         w="100%"
         justifyContent="space-between"
         alignItems="center"
-        color="red"
+        color="gray"
       >
         My Chats
         <GroupChatModal>
@@ -74,7 +74,7 @@ const MyChats = () => {
             New Group Chat
           </Button>
         </GroupChatModal>
-      </Flex>
+      </Box>
       <Box
         d="flex"
         flexDir="column"

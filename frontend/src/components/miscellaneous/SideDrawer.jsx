@@ -8,6 +8,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
+  Box,
   Input,
   Menu,
   MenuButton,
@@ -108,10 +109,11 @@ const SideDrawer = () => {
   };
 
   return (
-    <div>
-      <Flex
+    <>
+      <Box
         justifyContent="space-between"
         alignItems="center"
+        d="flex"
         bg="white"
         w="100%"
         p="5px 10px 5px 10px"
@@ -153,13 +155,13 @@ const SideDrawer = () => {
             </MenuList>
           </Menu>
         </div>
-      </Flex>
+      </Box>
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search User</DrawerHeader>
           <DrawerBody>
-            <Flex justifyContent="space-between" pb={2}>
+            <Box d="flex" justifyContent="space-between" pb={2}>
               {/* <Box d="flex" > */}
               <Input
                 placeholder="Search by name or email"
@@ -169,7 +171,7 @@ const SideDrawer = () => {
               />
               <Button onClick={handleSearch}>Go</Button>
               {/* </Box> */}
-            </Flex>
+            </Box>
             {loading ? (
               <ChatLoading />
             ) : (
@@ -188,7 +190,7 @@ const SideDrawer = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </div>
+    </>
   );
 };
 
