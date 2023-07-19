@@ -24,10 +24,15 @@ const ProfileModal = ({ user, children }) => {
       ) : (
         <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
       )}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal size="lg" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent h="410px">
-          <ModalHeader fontSize="40px" fontFamily="Work sans">
+          <ModalHeader
+            d="flex"
+            fontSize="40px"
+            justifyContent="center"
+            fontFamily="Work sans"
+          >
             {user.name}
           </ModalHeader>
           <ModalCloseButton />
@@ -35,12 +40,12 @@ const ProfileModal = ({ user, children }) => {
             d="flex"
             flexDir="column"
             alignItems="center"
-            justifyContent="center"
+            justifyContent="space-between"
           >
             <Image
               borderRadius="full"
               boxSize="150px"
-              src={user.pic}
+              src={user.picture || user.pic}
               alt={user.name}
             />
             <Text
