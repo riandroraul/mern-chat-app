@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRouter = require("./routes/user.routes");
 const chatRouter = require("./routes/chat.routes");
+const messageRouter = require("./routes/message.routes");
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 
 app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/message", messageRouter);
 
 // app.get("/api/chat", function (req, res, next) {
 //   if (req.query.hasOwnProperty("id")) {
