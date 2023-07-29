@@ -18,8 +18,8 @@ async function sendMessage(req, res) {
   };
   try {
     var message = await Message.create(newMessage);
-    message = await message.populate("sender", "name picture").execPopulate();
-    message = await message.populate("chat").execPopulate();
+    message = await message.populate("sender", "name picture");
+    message = await message.populate("chat");
     message = await User.populate(message, {
       path: "chat.users",
       select: "name pic email",
