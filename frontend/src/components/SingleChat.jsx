@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChatState } from "../Context/ChatProvider";
+import Lottie from "react-lottie";
 import {
   Box,
   FormControl,
@@ -18,7 +19,8 @@ import { useEffect } from "react";
 import "../assets/css/style.css";
 import ScrollableChat from "./ScrollableChat";
 import "../assets/css/style.css";
-import { io } from "socket.io-client";
+import io from "socket.io-client";
+import animationData from "../animations/typing.json";
 
 const endpoint = "http://localhost:5000";
 let socket, selectedChatCompare;
@@ -33,6 +35,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false);
   const toast = useToast();
 
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -42,6 +53,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (e) => {
     if (e.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedChat._id);
       try {
         const { data } = await axios.post(
           `${process.env.REACT_APP_API_URI}/api/message/send`,
@@ -70,7 +82,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket = io(endpoint);
     socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
+    socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
   }, []);
@@ -92,10 +104,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       }
     });
   });
-
-  const typingHandler = (e) => {
-    setNewMessage(e.target.value);
-  };
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -121,6 +129,29 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         position: "bottom",
       });
     }
+  };
+
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+
+    // typing indiator logic
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    let timerLength = 3000;
+    setTimeout(() => {
+      let timeNow = new Date().getTime();
+      let timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, [timerLength]);
   };
 
   return (
@@ -189,6 +220,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+              {isTyping ? (
+                <Lottie
+                  options={defaultOptions}
+                  height={30}
+                  width={50}
+                  style={{
+                    marginBottom: 15,
+                    marginLeft: 0,
+                  }}
+                />
+              ) : (
+                <></>
+              )}
               <Input
                 color="black"
                 variant="filled"

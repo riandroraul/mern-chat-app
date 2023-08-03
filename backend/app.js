@@ -6,8 +6,6 @@ const connectDB = require("./config/db");
 const userRouter = require("./routes/user.routes");
 const chatRouter = require("./routes/chat.routes");
 const messageRouter = require("./routes/message.routes");
-const { Server } = require("socket.io");
-const { createServer } = require("http");
 
 dotenv.config();
 
@@ -21,15 +19,15 @@ app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server Started on http://localhost:${port}`);
 });
-const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
     origin: "http://localhost:3000",
+    // credentials: true,
   },
 });
 
@@ -57,5 +55,10 @@ io.on("connection", (socket) => {
       if (user._id == newMessageReceived.sender._id) return;
       socket.in(user._id).emit("message recieved", newMessageReceived);
     });
+  });
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
   });
 });

@@ -30,7 +30,7 @@ const ScrollableChat = ({ messages }) => {
                   size="sm"
                   cursor="pointer"
                   name={message.sender.name}
-                  src={message.sender.pic}
+                  src={message.sender.pic || message.sender.picture}
                 />
               </Tooltip>
             )}
